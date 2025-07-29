@@ -5,6 +5,7 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	_ "github.com/go-sql-driver/mysql"
+	"news-feed/config"
 	"news-feed/dto"
 	"sync"
 )
@@ -181,7 +182,8 @@ var (
 func GetMySQLAccessor() (*MySQLAccessor, error) {
 	var err error
 	onceMySQL.Do(func() {
-		mysqlInstance, err = NewMySQLAccessor("root", "yeongjin", "localhost:3306", "database")
+		addr := fmt.Sprintf("%s:3306", config.GetInfraAddress())
+		mysqlInstance, err = NewMySQLAccessor("root", "yeongjin", addr, "database")
 	})
 	return mysqlInstance, err
 }

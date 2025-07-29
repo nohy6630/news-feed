@@ -2,7 +2,9 @@ package accessor
 
 import (
 	"context"
+	"fmt"
 	"github.com/twmb/franz-go/pkg/kgo"
+	"news-feed/config"
 	"sync"
 )
 
@@ -18,6 +20,7 @@ var (
 func NewKafkaAccessor(brokers []string, topic string) (*KafkaAccessor, error) {
 	var opts []kgo.Opt
 	opts = append(opts, kgo.SeedBrokers(brokers...))
+	opts = append(opts, kgo.ConsumerGroup("group"))
 	opts = append(opts, kgo.ConsumeTopics(topic))
 	cl, err := kgo.NewClient(opts...)
 	if err != nil {
@@ -29,7 +32,8 @@ func NewKafkaAccessor(brokers []string, topic string) (*KafkaAccessor, error) {
 func GetKafkaAccessor() (*KafkaAccessor, error) {
 	var err error
 	kafkaOnce.Do(func() {
-		kafkaInstance, err = NewKafkaAccessor([]string{"localhost:9092"}, "feed")
+		addr := fmt.Sprintf("%s:9092", config.GetInfraAddress())
+		kafkaInstance, err = NewKafkaAccessor([]string{addr}, "feed")
 	})
 	return kafkaInstance, err
 }

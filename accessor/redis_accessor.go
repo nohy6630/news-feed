@@ -2,7 +2,9 @@ package accessor
 
 import (
 	"context"
+	"fmt"
 	"github.com/redis/go-redis/v9"
+	"news-feed/config"
 	"sync"
 	"time"
 )
@@ -45,7 +47,8 @@ var (
 
 func GetRedisAccessor() *RedisAccessor {
 	onceRedis.Do(func() {
-		redisInstance = NewRedisAccessor("localhost:6379")
+		addr := fmt.Sprintf("%s:6379", config.GetInfraAddress())
+		redisInstance = NewRedisAccessor(addr)
 	})
 	return redisInstance
 }
