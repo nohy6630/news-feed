@@ -148,6 +148,31 @@ func (ma *MySQLAccessor) IsFollowExists(followerID, followeeID int64) (bool, err
 	return count > 0, nil
 }
 
+// 특정 사용자를 팔로우하는 모든 follower_id를 조회하는 함수
+func (ma *MySQLAccessor) GetFollowerIDsByFolloweeID(followeeID int64) ([]int64, error) {
+	query, args, err := sq.Select("follower_id").From("follow").Where(sq.Eq{"followee_id": followeeID}).ToSql()
+	if err != nil {
+		return nil, err
+	}
+	rows, err := ma.DB.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var followerIDs []int64
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		followerIDs = append(followerIDs, id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return followerIDs, nil
+}
+
 var (
 	onceMySQL     sync.Once
 	mysqlInstance *MySQLAccessor
