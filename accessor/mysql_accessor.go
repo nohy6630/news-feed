@@ -153,10 +153,10 @@ var (
 	mysqlInstance *MySQLAccessor
 )
 
-func GetMySQLAccessor(user, password, host, dbname string) (*MySQLAccessor, error) {
+func GetMySQLAccessor() (*MySQLAccessor, error) {
 	var err error
 	onceMySQL.Do(func() {
-		mysqlInstance, err = NewMySQLAccessor(user, password, host, dbname)
+		mysqlInstance, err = NewMySQLAccessor("root", "yeongjin", "localhost:3306", "database")
 	})
 	return mysqlInstance, err
 }
