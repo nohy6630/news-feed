@@ -2,12 +2,15 @@ package listener
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"news-feed/accessor"
 	"news-feed/dto"
+	"news-feed/manager"
 	"strconv"
 	"sync"
+	"time"
 )
 
 type RestListener struct {
@@ -95,9 +98,15 @@ func (rl *RestListener) registerRoutes() {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create post"})
 			return
 		}
-		// Redis에 post id 추가 (피드 TTL 24시간)
-		ra := accessor.GetRedisAccessor()
-		ra.AddPostToUserFeed(context.Background(), strconv.FormatInt(req.UserID, 10), strconv.FormatInt(id, 10), 86400)
+		km, _ := manager.GetKafkaManager()
+		err = km.Produce(context.Background(), dto.KafkaMessage{
+			UserID:    req.UserID,
+			PostID:    id,
+			Timestamp: time.Now().Unix(),
+		})
+		if err != nil {
+			fmt.Printf("failed to produce message: %v\n", err)
+		}
 		c.JSON(http.StatusOK, gin.H{"post_id": id})
 	})
 

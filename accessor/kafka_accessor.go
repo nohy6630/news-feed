@@ -26,10 +26,10 @@ func NewKafkaAccessor(brokers []string, topic string) (*KafkaAccessor, error) {
 	return &KafkaAccessor{Client: cl}, nil
 }
 
-func GetKafkaAccessor(brokers []string, topic string) (*KafkaAccessor, error) {
+func GetKafkaAccessor() (*KafkaAccessor, error) {
 	var err error
 	kafkaOnce.Do(func() {
-		kafkaInstance, err = NewKafkaAccessor(brokers, topic)
+		kafkaInstance, err = NewKafkaAccessor([]string{"localhost:9092"}, "feed")
 	})
 	return kafkaInstance, err
 }

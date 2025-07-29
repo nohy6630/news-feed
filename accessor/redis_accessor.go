@@ -23,11 +23,10 @@ func (ra *RedisAccessor) Ping(ctx context.Context) error {
 }
 
 // Sorted Set을 이용해 userID별로 postID를 저장 (만료 시간 설정 포함)
-func (ra *RedisAccessor) AddPostToUserFeed(ctx context.Context, userID string, postID string, ttlSeconds int) error {
+func (ra *RedisAccessor) AddPostToUserFeed(ctx context.Context, userID string, postID string, createdAt int64, ttlSeconds int) error {
 	key := "feed:" + userID
 	pipe := ra.Client.Pipeline()
-	now := time.Now().Unix()
-	pipe.ZAdd(ctx, key, redis.Z{Score: float64(now), Member: postID})
+	pipe.ZAdd(ctx, key, redis.Z{Score: float64(createdAt), Member: postID})
 	pipe.Expire(ctx, key, time.Duration(ttlSeconds)*time.Second)
 	_, err := pipe.Exec(ctx)
 	return err
