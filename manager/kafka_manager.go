@@ -50,6 +50,7 @@ func (km *KafkaManager) Consume(ctx context.Context) error {
 }
 
 func handleMessage(msg *kgo.Record) {
+	fmt.Printf("Received message: %s\n", string(msg.Value))
 	var kafkaMsg dto.KafkaMessage
 	if err := json.Unmarshal(msg.Value, &kafkaMsg); err != nil {
 		fmt.Printf("Error unmarshalling message: %v\n", err)

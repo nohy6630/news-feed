@@ -99,10 +99,10 @@ func (rl *RestListener) registerRoutes() {
 			return
 		}
 		followerIds, err := ma.GetFollowerIDsByFolloweeID(req.UserID)
-		for followerId := range followerIds {
+		for _, followerId := range followerIds {
 			km, _ := manager.GetKafkaManager()
 			err = km.Produce(context.Background(), dto.KafkaMessage{
-				UserID:    int64(followerId),
+				UserID:    followerId,
 				PostID:    id,
 				Timestamp: time.Now().Unix(),
 			})
