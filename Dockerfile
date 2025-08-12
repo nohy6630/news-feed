@@ -30,6 +30,9 @@ FROM alpine:latest
 # --from=builder는 "builder"라는 이름의 이전 스테이지에서 파일을 가져온다는 의미입니다.
 COPY --from=builder /app/news-feed /news-feed
 
+# config.json 파일을 빌더 스테이지에서 복사합니다.
+COPY --from=builder /app/config.json /config.json
+
 # 애플리케이션이 사용할 포트를 외부에 노출합니다.
 EXPOSE 8081
 

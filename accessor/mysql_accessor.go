@@ -182,7 +182,7 @@ var (
 func GetMySQLAccessor() (*MySQLAccessor, error) {
 	var err error
 	onceMySQL.Do(func() {
-		addr := fmt.Sprintf("%s:3306", config.GetInfraAddress())
+		addr := fmt.Sprintf("%s:3306", config.GetMySQLAddress())
 		mysqlInstance, err = NewMySQLAccessor("root", "yeongjin", addr, "database")
 	})
 	return mysqlInstance, err
