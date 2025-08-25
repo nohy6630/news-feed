@@ -41,6 +41,14 @@ spec:
               value: {{ .Values.zookeeper.env.ZOOKEEPER_CLIENT_PORT | quote }}
             - name: ZOOKEEPER_TICK_TIME
               value: {{ .Values.zookeeper.env.ZOOKEEPER_TICK_TIME | quote }}
+            - name: ZOOKEEPER_SERVER_ID
+              value: "1"
+            - name: ZOOKEEPER_SERVERS
+              value: "localhost:2888:3888"
+            - name: ZOOKEEPER_DATA_DIR
+              value: "/var/lib/zookeeper/data"
+            - name: ZOOKEEPER_DATA_LOG_DIR
+              value: "/var/lib/zookeeper/data"
           ports:
             - name: zookeeper
               containerPort: 2181
