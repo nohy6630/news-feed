@@ -18,10 +18,24 @@ spec:
         app.kubernetes.io/name: {{ .Values.common.name }}
         app.kubernetes.io/component: zookeeper
     spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: volume-permissions
+          image: busybox:1.35
+          command: ['sh', '-c', 'chown -R 1000:1000 /var/lib/zookeeper/data && chmod -R 755 /var/lib/zookeeper/data']
+          volumeMounts:
+            - name: zookeeper-data
+              mountPath: /var/lib/zookeeper/data
+          securityContext:
+            runAsUser: 0
       containers:
         - name: zookeeper
           image: "{{ .Values.zookeeper.image.repository }}:{{ .Values.zookeeper.image.tag }}"
           imagePullPolicy: {{ .Values.zookeeper.image.pullPolicy }}
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           env:
             - name: ZOOKEEPER_CLIENT_PORT
               value: {{ .Values.zookeeper.env.ZOOKEEPER_CLIENT_PORT | quote }}

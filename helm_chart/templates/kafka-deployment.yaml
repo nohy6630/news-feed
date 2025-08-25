@@ -18,10 +18,24 @@ spec:
         app.kubernetes.io/name: {{ .Values.common.name }}
         app.kubernetes.io/component: kafka
     spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: volume-permissions
+          image: busybox:1.35
+          command: ['sh', '-c', 'chown -R 1000:1000 /var/lib/kafka/data && chmod -R 755 /var/lib/kafka/data']
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka/data
+          securityContext:
+            runAsUser: 0
       containers:
         - name: kafka
           image: "{{ .Values.kafka.image.repository }}:{{ .Values.kafka.image.tag }}"
           imagePullPolicy: {{ .Values.kafka.image.pullPolicy }}
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           env:
             - name: KAFKA_BROKER_ID
               value: {{ .Values.kafka.env.KAFKA_BROKER_ID | quote }}
