@@ -1,0 +1,138 @@
+# Common naming configuration
+common:
+  name: "news-feed"
+  version: "1.0"
+
+# MySQL Configuration
+mysql:
+  enabled: true
+  image:
+    repository: mysql
+    tag: "8.0"
+    pullPolicy: IfNotPresent
+  auth:
+    rootPassword: "rootpassword"
+    database: "newsfeed"
+    username: "newsfeed"
+    password: "newsfeedpassword"
+  service:
+    type: ClusterIP
+    port: 3306
+  persistence:
+    enabled: true
+    size: 8Gi
+    storageClass: ""
+
+# Redis Configuration
+redis:
+  enabled: true
+  image:
+    repository: redis
+    tag: "7-alpine"
+    pullPolicy: IfNotPresent
+  auth:
+    enabled: false
+  service:
+    type: ClusterIP
+    port: 6379
+  persistence:
+    enabled: true
+    size: 2Gi
+    storageClass: ""
+
+# TimescaleDB Configuration
+timescaledb:
+  enabled: true
+  image:
+    repository: timescale/timescaledb
+    tag: "latest-pg15"
+    pullPolicy: IfNotPresent
+  auth:
+    database: "newsfeed_metrics"
+    username: "newsfeed"
+    password: "newsfeedpassword"
+    postgresPassword: "postgrespassword"
+  service:
+    type: ClusterIP
+    port: 5432
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: ""
+
+# Zookeeper Configuration
+zookeeper:
+  enabled: true
+  image:
+    repository: confluentinc/cp-zookeeper
+    tag: "7.4.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 2181
+  env:
+    ZOOKEEPER_CLIENT_PORT: 2181
+    ZOOKEEPER_TICK_TIME: 2000
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: ""
+
+# Kafka Configuration
+kafka:
+  enabled: true
+  image:
+    repository: confluentinc/cp-kafka
+    tag: "7.4.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 9092
+  env:
+    KAFKA_BROKER_ID: 1
+    KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+    KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+  persistence:
+    enabled: true
+    size: 4Gi
+    storageClass: ""
+
+# Resource limits and requests
+resources:
+  mysql:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  redis:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  timescaledb:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  zookeeper:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  kafka:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
