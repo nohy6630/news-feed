@@ -1,0 +1,18 @@
+{{- if and .Values.zookeeper.enabled .Values.zookeeper.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.common.name }}-zookeeper-pvc
+  labels:
+    {{- include "news-feed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: zookeeper
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.zookeeper.persistence.size }}
+  {{- if .Values.zookeeper.persistence.storageClass }}
+  storageClassName: {{ .Values.zookeeper.persistence.storageClass }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,47 @@
+{{- if .Values.zookeeper.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.common.name }}-zookeeper
+  labels:
+    {{- include "news-feed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: zookeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.common.name }}
+      app.kubernetes.io/component: zookeeper
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.common.name }}
+        app.kubernetes.io/component: zookeeper
+    spec:
+      containers:
+        - name: zookeeper
+          image: "{{ .Values.zookeeper.image.repository }}:{{ .Values.zookeeper.image.tag }}"
+          imagePullPolicy: {{ .Values.zookeeper.image.pullPolicy }}
+          env:
+            - name: ZOOKEEPER_CLIENT_PORT
+              value: {{ .Values.zookeeper.env.ZOOKEEPER_CLIENT_PORT | quote }}
+            - name: ZOOKEEPER_TICK_TIME
+              value: {{ .Values.zookeeper.env.ZOOKEEPER_TICK_TIME | quote }}
+          ports:
+            - name: zookeeper
+              containerPort: 2181
+              protocol: TCP
+          volumeMounts:
+            - name: zookeeper-data
+              mountPath: /var/lib/zookeeper/data
+          resources:
+            {{- toYaml .Values.resources.zookeeper | nindent 12 }}
+      volumes:
+        - name: zookeeper-data
+          {{- if .Values.zookeeper.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.common.name }}-zookeeper-pvc
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- end }}
