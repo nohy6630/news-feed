@@ -18,10 +18,24 @@ spec:
         app.kubernetes.io/name: {{ .Values.common.name }}
         app.kubernetes.io/component: timescaledb
     spec:
+      securityContext:
+        fsGroup: 999
+      initContainers:
+        - name: volume-permissions
+          image: busybox:1.35
+          command: ['sh', '-c', 'chown -R 999:999 /var/lib/postgresql/data && chmod -R 755 /var/lib/postgresql/data && rm -rf /var/lib/postgresql/data/lost+found']
+          volumeMounts:
+            - name: timescaledb-data
+              mountPath: /var/lib/postgresql/data
+          securityContext:
+            runAsUser: 0
       containers:
         - name: timescaledb
           image: "{{ .Values.timescaledb.image.repository }}:{{ .Values.timescaledb.image.tag }}"
           imagePullPolicy: {{ .Values.timescaledb.image.pullPolicy }}
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
           env:
             - name: POSTGRES_DB
               value: {{ .Values.timescaledb.auth.database | quote }}

@@ -18,10 +18,24 @@ spec:
         app.kubernetes.io/name: {{ .Values.common.name }}
         app.kubernetes.io/component: redis
     spec:
+      securityContext:
+        fsGroup: 999
+      initContainers:
+        - name: volume-permissions
+          image: busybox:1.35
+          command: ['sh', '-c', 'chown -R 999:999 /data && chmod -R 755 /data && rm -rf /data/lost+found']
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+          securityContext:
+            runAsUser: 0
       containers:
         - name: redis
           image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
           imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
           ports:
             - name: redis
               containerPort: 6379

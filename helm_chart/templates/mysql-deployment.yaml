@@ -18,10 +18,24 @@ spec:
         app.kubernetes.io/name: {{ .Values.common.name }}
         app.kubernetes.io/component: mysql
     spec:
+      securityContext:
+        fsGroup: 999
+      initContainers:
+        - name: volume-permissions
+          image: busybox:1.35
+          command: ['sh', '-c', 'chown -R 999:999 /var/lib/mysql && chmod -R 755 /var/lib/mysql && rm -rf /var/lib/mysql/lost+found']
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          securityContext:
+            runAsUser: 0
       containers:
         - name: mysql
           image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
           imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: {{ .Values.mysql.auth.rootPassword | quote }}
