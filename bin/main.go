@@ -11,7 +11,7 @@ func main() {
 	go km.Consume(context.Background())
 
 	rest := listener.GetRestListener()
-	err := rest.Start(":8081")
+	err := rest.Start(":8080")
 	if err != nil {
 		return
 	}
