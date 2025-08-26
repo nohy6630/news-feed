@@ -2,6 +2,7 @@
 common:
   name: "news-feed"
   version: "1.0"
+  secret: "regcred"
 
 # News Feed Application Configuration
 newsfeed:

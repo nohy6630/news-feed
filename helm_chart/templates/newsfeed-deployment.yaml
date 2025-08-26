@@ -45,7 +45,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
       imagePullSecrets:
-        - name: regcred
+        - name: {{ .Values.common.secret }}
       volumes:
         - name: config-volume
           configMap:
