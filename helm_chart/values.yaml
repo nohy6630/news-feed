@@ -3,6 +3,29 @@ common:
   name: "news-feed"
   version: "1.0"
 
+# News Feed Application Configuration
+newsfeed:
+  enabled: true
+  image:
+    repository: nohy6630/news-feed
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  replicas: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  config:
+    infra_address: "localhost"
+    mysql_address: "news-feed-mysql"
+
 # MySQL Configuration
 mysql:
   enabled: true

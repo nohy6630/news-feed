@@ -1,0 +1,16 @@
+{{- if .Values.newsfeed.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.common.name }}-config
+  labels:
+    {{- include "news-feed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: newsfeed
+data:
+  config.json: |
+    {
+      "infra_address": "{{ .Values.newsfeed.config.infra_address }}",
+      "mysql_address": "{{ .Values.newsfeed.config.mysql_address }}"
+    }
+{{- end }}
+
