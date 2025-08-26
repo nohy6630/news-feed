@@ -9,7 +9,7 @@ newsfeed:
   image:
     repository: news-feed.kr.ncr.ntruss.com/news-feed
     tag: "latest"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: LoadBalancer
     port: 80
