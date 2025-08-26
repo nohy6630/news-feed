@@ -47,7 +47,7 @@ var (
 
 func GetRedisAccessor() *RedisAccessor {
 	onceRedis.Do(func() {
-		addr := fmt.Sprintf("%s:6379", config.GetInfraAddress())
+		addr := fmt.Sprintf("%s:6379", config.GetRedisAddress())
 		redisInstance = NewRedisAccessor(addr)
 	})
 	return redisInstance

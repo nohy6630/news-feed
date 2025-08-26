@@ -34,7 +34,7 @@ COPY --from=builder /app/news-feed /news-feed
 COPY --from=builder /app/config.json /config.json
 
 # 애플리케이션이 사용할 포트를 외부에 노출합니다.
-EXPOSE 8081
+EXPOSE 8080
 
 # 컨테이너 시작 시 실행될 명령어를 지정합니다.
 CMD ["/news-feed"]

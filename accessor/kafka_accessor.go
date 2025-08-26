@@ -32,7 +32,7 @@ func NewKafkaAccessor(brokers []string, topic string) (*KafkaAccessor, error) {
 func GetKafkaAccessor() (*KafkaAccessor, error) {
 	var err error
 	kafkaOnce.Do(func() {
-		addr := fmt.Sprintf("%s:9092", config.GetInfraAddress())
+		addr := fmt.Sprintf("%s:9092", config.GetKafkaAddress())
 		kafkaInstance, err = NewKafkaAccessor([]string{addr}, "feed")
 	})
 	return kafkaInstance, err

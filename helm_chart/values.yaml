@@ -7,7 +7,7 @@ common:
 newsfeed:
   enabled: true
   image:
-    repository: nohy6630/news-feed
+    repository: news-feed.kr.ncr.ntruss.com/news-feed
     tag: "latest"
     pullPolicy: IfNotPresent
   service:
