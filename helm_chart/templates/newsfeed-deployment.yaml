@@ -44,6 +44,8 @@ spec:
               port: http
             initialDelaySeconds: 5
             periodSeconds: 5
+      imagePullSecrets:
+        - name: regcred
       volumes:
         - name: config-volume
           configMap:
