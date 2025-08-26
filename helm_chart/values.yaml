@@ -23,7 +23,8 @@ newsfeed:
       cpu: 250m
       memory: 256Mi
   config:
-    infra_address: "localhost"
+    kafka_address: "news-feed-kafka"
+    redis_address: "news-feed-redis"
     mysql_address: "news-feed-mysql"
 
 # MySQL Configuration
