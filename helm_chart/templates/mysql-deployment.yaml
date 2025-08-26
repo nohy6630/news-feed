@@ -52,6 +52,8 @@ spec:
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: mysql-init
+              mountPath: /docker-entrypoint-initdb.d
           resources:
             {{- toYaml .Values.resources.mysql | nindent 12 }}
       volumes:
@@ -62,4 +64,8 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        - name: mysql-init
+          configMap:
+            name: {{ .Values.common.name }}-mysql-init
 {{- end }}
+

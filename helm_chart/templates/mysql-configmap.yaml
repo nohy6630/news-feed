@@ -1,0 +1,37 @@
+{{- if .Values.mysql.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.common.name }}-mysql-init
+  labels:
+    {{- include "news-feed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS `database`;
+    USE `database`;
+
+    CREATE TABLE IF NOT EXISTS user (
+        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(64) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS follow (
+        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        follower_id BIGINT UNSIGNED NOT NULL,
+        followee_id BIGINT UNSIGNED NOT NULL,
+        FOREIGN KEY (follower_id) REFERENCES user(id),
+        FOREIGN KEY (followee_id) REFERENCES user(id),
+        UNIQUE KEY uniq_follow (follower_id, followee_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS post (
+        id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        content TEXT NOT NULL,
+        user_id BIGINT UNSIGNED NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES user(id)
+    );
+{{- end }}
+

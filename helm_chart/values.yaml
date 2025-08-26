@@ -37,7 +37,7 @@ mysql:
     pullPolicy: IfNotPresent
   auth:
     rootPassword: "rootpassword"
-    database: "newsfeed"
+    database: "database"
     username: "newsfeed"
     password: "newsfeedpassword"
   service:
