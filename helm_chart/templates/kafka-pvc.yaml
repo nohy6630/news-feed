@@ -13,6 +13,10 @@ spec:
     requests:
       storage: {{ .Values.kafka.persistence.size }}
   {{- if .Values.kafka.persistence.storageClass }}
+  {{- if ne .Values.kafka.persistence.storageClass "" }}
   storageClassName: {{ .Values.kafka.persistence.storageClass }}
+  {{- end }}
+  {{- else }}
+  storageClassName: ""
   {{- end }}
 {{- end }}
