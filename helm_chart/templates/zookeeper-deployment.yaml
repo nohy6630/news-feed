@@ -41,10 +41,6 @@ spec:
               value: {{ .Values.zookeeper.env.ZOOKEEPER_CLIENT_PORT | quote }}
             - name: ZOOKEEPER_TICK_TIME
               value: {{ .Values.zookeeper.env.ZOOKEEPER_TICK_TIME | quote }}
-            - name: ZOOKEEPER_SERVER_ID
-              value: "1"
-            - name: ZOOKEEPER_SERVERS
-              value: "localhost:2888:3888"
             - name: ZOOKEEPER_DATA_DIR
               value: "/var/lib/zookeeper/data"
             - name: ZOOKEEPER_DATA_LOG_DIR
@@ -58,6 +54,26 @@ spec:
               mountPath: /var/lib/zookeeper/data
           resources:
             {{- toYaml .Values.resources.zookeeper | nindent 12 }}
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "echo ruok | nc localhost 2181 | grep imok"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "echo ruok | nc localhost 2181 | grep imok"
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
       volumes:
         - name: zookeeper-data
           {{- if .Values.zookeeper.persistence.enabled }}

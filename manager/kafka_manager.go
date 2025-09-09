@@ -24,6 +24,7 @@ func NewKafkaManager() (*KafkaManager, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("Kafka accessor:", ka)
 	return &KafkaManager{Accessor: ka}, nil
 }
 
@@ -32,6 +33,7 @@ func GetKafkaManager() (*KafkaManager, error) {
 	kafkaManagerOnce.Do(func() {
 		kafkaManagerInstance, err = NewKafkaManager()
 	})
+	fmt.Printf("Kafka manager instance: %v\n", kafkaManagerInstance)
 	return kafkaManagerInstance, err
 }
 
@@ -41,6 +43,7 @@ func (km *KafkaManager) Produce(ctx context.Context, msg dto.KafkaMessage) error
 	if err != nil {
 		return err
 	}
+	fmt.Println("marshal: ", string(value))
 	return km.Accessor.ProduceSync(ctx, "feed", value)
 }
 

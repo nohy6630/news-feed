@@ -10,9 +10,8 @@ spec:
   type: {{ .Values.mysql.service.type }}
   ports:
     - port: {{ .Values.mysql.service.port }}
-      targetPort: mysql
+      targetPort: {{ .Values.mysql.service.port }}
       protocol: TCP
-      name: mysql
   selector:
     app.kubernetes.io/name: {{ .Values.common.name }}
     app.kubernetes.io/component: mysql

@@ -10,9 +10,8 @@ spec:
   type: {{ .Values.timescaledb.service.type }}
   ports:
     - port: {{ .Values.timescaledb.service.port }}
-      targetPort: timescaledb
+      targetPort: {{ .Values.timescaledb.service.port }}
       protocol: TCP
-      name: timescaledb
   selector:
     app.kubernetes.io/name: {{ .Values.common.name }}
     app.kubernetes.io/component: timescaledb

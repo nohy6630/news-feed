@@ -10,9 +10,8 @@ spec:
   type: {{ .Values.kafka.service.type }}
   ports:
     - port: {{ .Values.kafka.service.port }}
-      targetPort: kafka
+      targetPort: {{ .Values.kafka.service.port }}
       protocol: TCP
-      name: kafka
   selector:
     app.kubernetes.io/name: {{ .Values.common.name }}
     app.kubernetes.io/component: kafka

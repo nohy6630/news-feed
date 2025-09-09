@@ -98,9 +98,13 @@ func (rl *RestListener) registerRoutes() {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create post"})
 			return
 		}
+		fmt.Printf("New post created with ID: %d\n", id)
 		followerIds, err := ma.GetFollowerIDsByFolloweeID(req.UserID)
+		fmt.Printf("followerIds: %v\n", followerIds)
 		for _, followerId := range followerIds {
+			fmt.Printf("followerId: %v\n", followerId)
 			km, _ := manager.GetKafkaManager()
+			fmt.Printf("kafka manager: %v\n", km)
 			err = km.Produce(context.Background(), dto.KafkaMessage{
 				UserID:    followerId,
 				PostID:    id,
@@ -109,6 +113,7 @@ func (rl *RestListener) registerRoutes() {
 			if err != nil {
 				fmt.Printf("failed to produce message: %v\n", err)
 			}
+			fmt.Printf("message sent to followerId: %v\n", followerId)
 		}
 		c.JSON(http.StatusOK, gin.H{"post_id": id})
 	})

@@ -12,7 +12,6 @@ spec:
     - port: {{ .Values.newsfeed.service.port }}
       targetPort: {{ .Values.newsfeed.service.targetPort }}
       protocol: TCP
-      name: http
   selector:
     app.kubernetes.io/name: {{ .Values.common.name }}
     app.kubernetes.io/component: newsfeed
