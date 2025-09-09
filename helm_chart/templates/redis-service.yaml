@@ -10,7 +10,7 @@ spec:
   type: {{ .Values.redis.service.type }}
   ports:
     - port: {{ .Values.redis.service.port }}
-      targetPort: redis
+      targetPort: 6379
       protocol: TCP
       name: redis
   selector:

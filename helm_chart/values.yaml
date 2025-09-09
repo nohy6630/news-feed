@@ -36,7 +36,7 @@ mysql:
     tag: "8.0"
     pullPolicy: IfNotPresent
   auth:
-    rootPassword: "rootpassword"
+    rootPassword: "yeongjin"
     database: "database"
     username: "newsfeed"
     password: "newsfeedpassword"
