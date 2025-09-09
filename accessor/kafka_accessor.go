@@ -6,7 +6,6 @@ import (
 	"github.com/twmb/franz-go/pkg/kgo"
 	"news-feed/config"
 	"sync"
-	"time"
 )
 
 type KafkaAccessor struct {
@@ -23,12 +22,6 @@ func NewKafkaAccessor(brokers []string, topic string) (*KafkaAccessor, error) {
 	opts = append(opts, kgo.SeedBrokers(brokers...))
 	opts = append(opts, kgo.ConsumerGroup("group"))
 	opts = append(opts, kgo.ConsumeTopics(topic))
-
-	// 프로듀서 ACK 설정
-	opts = append(opts, kgo.RequiredAcks(kgo.LeaderAck()))          // 모든 in-sync replica로부터 ACK 받기
-	opts = append(opts, kgo.RequestTimeoutOverhead(10*time.Second)) // 요청 타임아웃
-	opts = append(opts, kgo.ProduceRequestTimeout(15*time.Second))  // 프로듀스 타임아웃
-	opts = append(opts, kgo.RequestRetries(3))                      // 재시도 횟수
 
 	cl, err := kgo.NewClient(opts...)
 	if err != nil {
