@@ -4,15 +4,12 @@ kind: Service
 metadata:
   name: {{ .Values.common.name }}-kafka
   labels:
-    {{- include "news-feed.labels" . | nindent 4 }}
-    app.kubernetes.io/component: kafka
+    app: kafka
 spec:
-  type: {{ .Values.kafka.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.kafka.service.port }}
-      targetPort: {{ .Values.kafka.service.port }}
-      protocol: TCP
+    - port: 9092
+      targetPort: 9092
   selector:
-    app.kubernetes.io/name: {{ .Values.common.name }}
-    app.kubernetes.io/component: kafka
+    app: kafka
 {{- end }}

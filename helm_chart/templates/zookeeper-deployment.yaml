@@ -4,82 +4,30 @@ kind: Deployment
 metadata:
   name: {{ .Values.common.name }}-zookeeper
   labels:
-    {{- include "news-feed.labels" . | nindent 4 }}
-    app.kubernetes.io/component: zookeeper
+    app: zookeeper
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.common.name }}
-      app.kubernetes.io/component: zookeeper
+      app: zookeeper
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Values.common.name }}
-        app.kubernetes.io/component: zookeeper
+        app: zookeeper
     spec:
-      securityContext:
-        fsGroup: 1000
-      initContainers:
-        - name: volume-permissions
-          image: busybox:1.35
-          command: ['sh', '-c', 'chown -R 1000:1000 /var/lib/zookeeper/data && chmod -R 755 /var/lib/zookeeper/data']
-          volumeMounts:
-            - name: zookeeper-data
-              mountPath: /var/lib/zookeeper/data
-          securityContext:
-            runAsUser: 0
       containers:
         - name: zookeeper
-          image: "{{ .Values.zookeeper.image.repository }}:{{ .Values.zookeeper.image.tag }}"
-          imagePullPolicy: {{ .Values.zookeeper.image.pullPolicy }}
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
+          image: "bitnami/zookeeper:3.9"
           env:
-            - name: ZOOKEEPER_CLIENT_PORT
-              value: {{ .Values.zookeeper.env.ZOOKEEPER_CLIENT_PORT | quote }}
-            - name: ZOOKEEPER_TICK_TIME
-              value: {{ .Values.zookeeper.env.ZOOKEEPER_TICK_TIME | quote }}
-            - name: ZOOKEEPER_DATA_DIR
-              value: "/var/lib/zookeeper/data"
-            - name: ZOOKEEPER_DATA_LOG_DIR
-              value: "/var/lib/zookeeper/data"
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
           ports:
-            - name: zookeeper
-              containerPort: 2181
-              protocol: TCP
-          volumeMounts:
-            - name: zookeeper-data
-              mountPath: /var/lib/zookeeper/data
+            - containerPort: 2181
           resources:
-            {{- toYaml .Values.resources.zookeeper | nindent 12 }}
-          readinessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - "echo ruok | nc localhost 2181 | grep imok"
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
-          livenessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - "echo ruok | nc localhost 2181 | grep imok"
-            initialDelaySeconds: 60
-            periodSeconds: 30
-            timeoutSeconds: 5
-            failureThreshold: 3
-      volumes:
-        - name: zookeeper-data
-          {{- if .Values.zookeeper.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.common.name }}-zookeeper-pvc
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
 {{- end }}

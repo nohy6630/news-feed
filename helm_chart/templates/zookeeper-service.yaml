@@ -4,16 +4,12 @@ kind: Service
 metadata:
   name: {{ .Values.common.name }}-zookeeper
   labels:
-    {{- include "news-feed.labels" . | nindent 4 }}
-    app.kubernetes.io/component: zookeeper
+    app: zookeeper
 spec:
-  type: {{ .Values.zookeeper.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.zookeeper.service.port }}
-      targetPort: {{ .Values.zookeeper.service.port }}
-      protocol: TCP
-      name: zookeeper
+    - port: 2181
+      targetPort: 2181
   selector:
-    app.kubernetes.io/name: {{ .Values.common.name }}
-    app.kubernetes.io/component: zookeeper
+    app: zookeeper
 {{- end }}
