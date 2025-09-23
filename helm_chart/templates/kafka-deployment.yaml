@@ -29,6 +29,12 @@ spec:
               value: "PLAINTEXT://{{ .Values.common.name }}-kafka:9092"
             - name: KAFKA_CFG_BROKER_ID
               value: "1"
+            - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+              value: "true"
+            - name: KAFKA_CFG_NUM_PARTITIONS
+              value: "3"
+            - name: KAFKA_CFG_DEFAULT_REPLICATION_FACTOR
+              value: "1"
           ports:
             - containerPort: 9092
           resources:
@@ -38,4 +44,28 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
+        - name: topic-creator
+          image: "bitnami/kafka:3.6"
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for Kafka to be ready..."
+              sleep 60
+
+              echo "Creating feed topic..."
+              kafka-topics.sh --create --if-not-exists --topic feed --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+
+              echo "Verifying topic creation..."
+              kafka-topics.sh --list --bootstrap-server localhost:9092
+
+              echo "Topic creation completed. Keeping container alive..."
+              sleep infinity
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
 {{- end }}
