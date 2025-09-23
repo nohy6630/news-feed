@@ -4,15 +4,12 @@ kind: Service
 metadata:
   name: {{ .Values.common.name }}-redis
   labels:
-    {{- include "news-feed.labels" . | nindent 4 }}
-    app.kubernetes.io/component: redis
+    app: redis
 spec:
-  type: {{ .Values.redis.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.redis.service.port }}
-      targetPort: {{ .Values.redis.service.port }}
-      protocol: TCP
+    - port: 6379
+      targetPort: 6379
   selector:
-    app.kubernetes.io/name: {{ .Values.common.name }}
-    app.kubernetes.io/component: redis
+    app: redis
 {{- end }}

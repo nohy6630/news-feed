@@ -4,53 +4,27 @@ kind: Deployment
 metadata:
   name: {{ .Values.common.name }}-redis
   labels:
-    {{- include "news-feed.labels" . | nindent 4 }}
-    app.kubernetes.io/component: redis
+    app: redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.common.name }}
-      app.kubernetes.io/component: redis
+      app: redis
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Values.common.name }}
-        app.kubernetes.io/component: redis
+        app: redis
     spec:
-      securityContext:
-        fsGroup: 999
-      initContainers:
-        - name: volume-permissions
-          image: busybox:1.35
-          command: ['sh', '-c', 'chown -R 999:999 /data && chmod -R 755 /data && rm -rf /data/lost+found']
-          volumeMounts:
-            - name: redis-data
-              mountPath: /data
-          securityContext:
-            runAsUser: 0
       containers:
         - name: redis
-          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
-          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
-          securityContext:
-            runAsUser: 999
-            runAsGroup: 999
+          image: "redis:7-alpine"
           ports:
-            - name: redis
-              containerPort: 6379
-              protocol: TCP
-          volumeMounts:
-            - name: redis-data
-              mountPath: /data
+            - containerPort: 6379
           resources:
-            {{- toYaml .Values.resources.redis | nindent 12 }}
-      volumes:
-        - name: redis-data
-          {{- if .Values.redis.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.common.name }}-redis-pvc
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
 {{- end }}
