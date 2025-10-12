@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.common.name }}-grafana-dashboards
+  labels:
+    {{- include "news-feed.labels" . | nindent 4 }}
+    app.kubernetes.io/component: grafana
+    grafana_dashboard: "1"
+data:
+  mysql-dashboard.json: |
+    {
+      "title": "News Feed - MySQL Metrics",
+      "tags": ["mysql", "database"],
+      "timezone": "browser",
+      "panels": [
+        {
+          "title": "MySQL Connections",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "mysql_global_status_threads_connected",
+              "legendFormat": "Active Connections"
+            },
+            {
+              "expr": "mysql_global_status_max_used_connections",
+              "legendFormat": "Max Used Connections"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+        },
+        {
+          "title": "MySQL Queries Per Second",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(mysql_global_status_queries[5m])",
+              "legendFormat": "Queries/sec"
+            },
+            {
+              "expr": "rate(mysql_global_status_questions[5m])",
+              "legendFormat": "Questions/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+        },
+        {
+          "title": "MySQL Network Traffic",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(mysql_global_status_bytes_sent[5m])",
+              "legendFormat": "Bytes Sent/sec"
+            },
+            {
+              "expr": "rate(mysql_global_status_bytes_received[5m])",
+              "legendFormat": "Bytes Received/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+        },
+        {
+          "title": "MySQL Command Statistics",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(mysql_global_status_commands_total{command=\"select\"}[5m])",
+              "legendFormat": "SELECT"
+            },
+            {
+              "expr": "rate(mysql_global_status_commands_total{command=\"insert\"}[5m])",
+              "legendFormat": "INSERT"
+            },
+            {
+              "expr": "rate(mysql_global_status_commands_total{command=\"update\"}[5m])",
+              "legendFormat": "UPDATE"
+            },
+            {
+              "expr": "rate(mysql_global_status_commands_total{command=\"delete\"}[5m])",
+              "legendFormat": "DELETE"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+        },
+        {
+          "title": "MySQL Slow Queries",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(mysql_global_status_slow_queries[5m])",
+              "legendFormat": "Slow Queries/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+        },
+        {
+          "title": "MySQL Table Locks",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(mysql_global_status_table_locks_immediate[5m])",
+              "legendFormat": "Locks Immediate"
+            },
+            {
+              "expr": "rate(mysql_global_status_table_locks_waited[5m])",
+              "legendFormat": "Locks Waited"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+        }
+      ],
+      "refresh": "10s",
+      "schemaVersion": 16,
+      "version": 1
+    }

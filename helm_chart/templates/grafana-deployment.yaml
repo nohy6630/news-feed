@@ -39,6 +39,10 @@ spec:
               mountPath: /var/lib/grafana
             - name: grafana-datasources
               mountPath: /etc/grafana/provisioning/datasources
+            - name: grafana-dashboards
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: grafana-dashboard-config
+              mountPath: /etc/grafana/provisioning/dashboards/default
           resources:
             {{- toYaml .Values.resources.grafana | nindent 12 }}
       volumes:
@@ -48,3 +52,9 @@ spec:
         - name: grafana-datasources
           configMap:
             name: {{ .Values.common.name }}-grafana-datasources
+        - name: grafana-dashboards
+          configMap:
+            name: {{ .Values.common.name }}-grafana-dashboard-provider
+        - name: grafana-dashboard-config
+          configMap:
+            name: {{ .Values.common.name }}-grafana-dashboards
