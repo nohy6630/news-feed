@@ -33,5 +33,8 @@ data:
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES user(id)
     );
-{{- end }}
 
+    -- Grant necessary privileges for mysqld-exporter
+    GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'newsfeed'@'%';
+    FLUSH PRIVILEGES;
+{{- end }}

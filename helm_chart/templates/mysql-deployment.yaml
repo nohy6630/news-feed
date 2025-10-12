@@ -56,6 +56,28 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
           resources:
             {{- toYaml .Values.resources.mysql | nindent 12 }}
+        - name: mysqld-exporter
+          image: prom/mysqld-exporter:v0.15.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - "--mysqld.username={{ .Values.mysql.auth.username }}"
+            - "--mysqld.address=localhost:3306"
+          env:
+            - name: MYSQLD_EXPORTER_PASSWORD
+              value: "{{ .Values.mysql.auth.password }}"
+            - name: DATA_SOURCE_NAME
+              value: "{{ .Values.mysql.auth.username }}:{{ .Values.mysql.auth.password }}@(localhost:3306)/"
+          ports:
+            - name: metrics
+              containerPort: 9104
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
       volumes:
         - name: mysql-data
           {{- if .Values.mysql.persistence.enabled }}
@@ -68,4 +90,3 @@ spec:
           configMap:
             name: {{ .Values.common.name }}-mysql-init
 {{- end }}
-

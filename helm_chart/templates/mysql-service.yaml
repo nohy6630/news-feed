@@ -12,6 +12,11 @@ spec:
     - port: {{ .Values.mysql.service.port }}
       targetPort: {{ .Values.mysql.service.port }}
       protocol: TCP
+      name: mysql
+    - port: 9104
+      targetPort: 9104
+      protocol: TCP
+      name: metrics
   selector:
     app.kubernetes.io/name: {{ .Values.common.name }}
     app.kubernetes.io/component: mysql

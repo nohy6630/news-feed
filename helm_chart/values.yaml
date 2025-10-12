@@ -80,6 +80,29 @@ zookeeper:
 kafka:
   enabled: true
 
+# Prometheus Configuration
+prometheus:
+  image:
+    repository: prom/prometheus
+    tag: "v2.47.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 9090
+
+# Grafana Configuration
+grafana:
+  image:
+    repository: grafana/grafana
+    tag: "10.1.0"
+    pullPolicy: IfNotPresent
+  auth:
+    adminUser: "admin"
+    adminPassword: "admin"
+  service:
+    type: LoadBalancer
+    port: 3000
+
 # Resource limits and requests
 resources:
   mysql:
@@ -117,3 +140,17 @@ resources:
     requests:
       cpu: 250m
       memory: 512Mi
+  prometheus:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  grafana:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

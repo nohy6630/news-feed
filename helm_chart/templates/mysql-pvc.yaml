@@ -12,7 +12,4 @@ spec:
   resources:
     requests:
       storage: {{ .Values.mysql.persistence.size }}
-  {{- if .Values.mysql.persistence.storageClass }}
-  storageClassName: {{ .Values.mysql.persistence.storageClass }}
-  {{- end }}
 {{- end }}
