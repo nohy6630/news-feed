@@ -7,7 +7,7 @@ spec:
 
   source:
     repoURL: https://github.com/nohy6630/news-feed.git  # Git 레포지토리 URL로 변경
-    targetRevision: HEAD  # 또는 main, master 등 브랜치명
+    targetRevision: main
     path: helm_chart
     helm:
       valueFiles:
@@ -15,7 +15,6 @@ spec:
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: news-feed
 
   syncPolicy:
     automated:
