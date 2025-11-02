@@ -6,12 +6,18 @@ k8s 위에서 돌아가는 실시간 뉴스 피드 서비스
 
 ```mermaid
 graph TD;
+    GitRepo[Git Repository]
+    
     subgraph "NCP";
         LB[Load Balancer];
 
     subgraph "NKS Cluster";
 
         direction LR
+        
+            subgraph "CI/CD"
+                ArgoCD[ArgoCD]
+            end
         
             subgraph "Main"
                 UnifiedServer[API / Consumer / Producer <br> Server]
@@ -34,6 +40,13 @@ graph TD;
                 Grafana[Grafana]
             end
 
+        ArgoCD -.->|Deploy| UnifiedServer;
+        ArgoCD -.->|Deploy| Kafka;
+        ArgoCD -.->|Deploy| Redis;
+        ArgoCD -.->|Deploy| MySQL;
+        ArgoCD -.->|Deploy| Prometheus;
+        ArgoCD -.->|Deploy| Grafana;
+        
         UnifiedServer --> Kafka;
         UnifiedServer --> Redis;
         UnifiedServer --> MySQL;
@@ -50,6 +63,7 @@ graph TD;
     end
     end
     
+    GitRepo -->|Sync| ArgoCD;
     LB --> UnifiedServer;
     LB --> Grafana
 ```
@@ -58,6 +72,7 @@ graph TD;
 
 본 프로젝트는 **이벤트 드리븐 아키텍처**를 채택하여 확장 가능하고 실시간 응답이 가능한 뉴스 피드 시스템을 구현합니다.
 
+- **ArgoCD**: GitOps 기반 지속적 배포(CD)를 통해 Kubernetes 리소스 자동 관리 및 동기화
 - **Golang Server**: REST API, Kafka Producer, Kafka Consumer를 단일 서버에서 통합 운영
 - **Kafka**: 새 게시물 생성 시 팔로워들에게 비동기적으로 피드 전달
 - **Redis**: 사용자별 피드를 캐싱하여 빠른 조회 성능 제공
