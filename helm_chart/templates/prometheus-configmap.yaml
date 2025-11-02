@@ -21,3 +21,9 @@ data:
           - targets: ['{{ .Values.common.name }}-mysql:9104']
             labels:
               service: 'mysql'
+
+      - job_name: 'redis-exporter'
+        static_configs:
+          - targets: ['{{ .Values.common.name }}-redis:9121']
+            labels:
+              service: 'redis'
