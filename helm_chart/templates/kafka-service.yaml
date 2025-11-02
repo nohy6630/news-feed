@@ -10,6 +10,10 @@ spec:
   ports:
     - port: 9092
       targetPort: 9092
+      name: kafka
+    - port: 7071
+      targetPort: 7071
+      name: metrics
   selector:
     app: kafka
 {{- end }}

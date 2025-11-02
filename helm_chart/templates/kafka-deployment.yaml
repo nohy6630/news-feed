@@ -15,6 +15,17 @@ spec:
       labels:
         app: kafka
     spec:
+      initContainers:
+        - name: jmx-exporter-installer
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              curl -L https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.20.0/jmx_prometheus_javaagent-0.20.0.jar -o /jmx-exporter/jmx_prometheus_javaagent.jar
+          volumeMounts:
+            - name: jmx-exporter
+              mountPath: /jmx-exporter
       containers:
         - name: kafka
           image: "confluentinc/cp-kafka:7.5.0"
@@ -37,8 +48,18 @@ spec:
               value: "true"
             - name: KAFKA_NUM_PARTITIONS
               value: "3"
+            - name: KAFKA_OPTS
+              value: "-javaagent:/jmx-exporter/jmx_prometheus_javaagent.jar=7071:/etc/jmx-exporter/config.yml"
           ports:
             - containerPort: 9092
+              name: kafka
+            - containerPort: 7071
+              name: metrics
+          volumeMounts:
+            - name: jmx-exporter
+              mountPath: /jmx-exporter
+            - name: jmx-config
+              mountPath: /etc/jmx-exporter
           resources:
             requests:
               memory: "512Mi"
@@ -70,4 +91,10 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "100m"
+      volumes:
+        - name: jmx-exporter
+          emptyDir: {}
+        - name: jmx-config
+          configMap:
+            name: {{ .Values.common.name }}-jmx-config
 {{- end }}

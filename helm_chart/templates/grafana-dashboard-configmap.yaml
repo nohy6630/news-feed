@@ -231,3 +231,265 @@ data:
       "schemaVersion": 16,
       "version": 1
     }
+  kafka-dashboard.json: |
+    {
+      "title": "Kafka",
+      "timezone": "browser",
+      "panels": [
+        {
+          "title": "Kafka Broker Status",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_KafkaServer_BrokerState",
+              "legendFormat": "Broker State (3=Running)"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+        },
+        {
+          "title": "Active Controller Count",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_controller_KafkaController_ActiveControllerCount",
+              "legendFormat": "Active Controllers"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+        },
+        {
+          "title": "Messages In Per Second",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(kafka_server_BrokerTopicMetrics_MessagesInPerSec_count[5m])",
+              "legendFormat": "Messages In/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+        },
+        {
+          "title": "Bytes In/Out Per Second",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(kafka_server_BrokerTopicMetrics_BytesInPerSec_count[5m])",
+              "legendFormat": "Bytes In/sec"
+            },
+            {
+              "expr": "rate(kafka_server_BrokerTopicMetrics_BytesOutPerSec_count[5m])",
+              "legendFormat": "Bytes Out/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+        },
+        {
+          "title": "Request Queue Size",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_network_RequestChannel_RequestQueueSize",
+              "legendFormat": "Request Queue Size"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+        },
+        {
+          "title": "Response Queue Size",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_network_RequestChannel_ResponseQueueSize",
+              "legendFormat": "Response Queue Size"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+        },
+        {
+          "title": "Under Replicated Partitions",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_ReplicaManager_UnderReplicatedPartitions",
+              "legendFormat": "Under Replicated Partitions"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+        },
+        {
+          "title": "Offline Partitions Count",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_controller_KafkaController_OfflinePartitionsCount",
+              "legendFormat": "Offline Partitions"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+        },
+        {
+          "title": "ISR Shrinks/Expands Per Second",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_ReplicaManager_IsrShrinksPerSec",
+              "legendFormat": "ISR Shrinks/sec"
+            },
+            {
+              "expr": "kafka_server_ReplicaManager_IsrExpandsPerSec",
+              "legendFormat": "ISR Expands/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32}
+        },
+        {
+          "title": "Partition & Leader Count",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_ReplicaManager_PartitionCount",
+              "legendFormat": "Partition Count"
+            },
+            {
+              "expr": "kafka_server_ReplicaManager_LeaderCount",
+              "legendFormat": "Leader Count"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32}
+        },
+        {
+          "title": "Request Handler Avg Idle Percent",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_KafkaRequestHandlerPool_RequestHandlerAvgIdlePercent",
+              "legendFormat": "Avg Idle %"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 40}
+        },
+        {
+          "title": "Network I/O Ratio",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "avg(kafka_server_socket_server_metrics_io_ratio) by (listener)",
+              "legendFormat": "I/O Ratio"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 40}
+        },
+        {
+          "title": "Total Produce Requests Per Second",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(kafka_server_BrokerTopicMetrics_TotalProduceRequestsPerSec_count[5m])",
+              "legendFormat": "Produce Requests/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 48}
+        },
+        {
+          "title": "Total Fetch Requests Per Second",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(kafka_server_BrokerTopicMetrics_TotalFetchRequestsPerSec_count[5m])",
+              "legendFormat": "Fetch Requests/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 48}
+        },
+        {
+          "title": "Failed Produce Requests",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_BrokerTopicMetrics_FailedProduceRequestsPerSec_count",
+              "legendFormat": "Failed Produce Requests"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 56}
+        },
+        {
+          "title": "Failed Fetch Requests",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_BrokerTopicMetrics_FailedFetchRequestsPerSec_count",
+              "legendFormat": "Failed Fetch Requests"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 56}
+        },
+        {
+          "title": "Log Flush Rate",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_log_LogFlushStats_LogFlushRateAndTimeMs",
+              "legendFormat": "Log Flush Rate"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 64}
+        },
+        {
+          "title": "Leader Election Rate",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "rate(kafka_controller_ControllerStats_LeaderElectionRateAndTimeMs_count[5m])",
+              "legendFormat": "Leader Elections/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 64}
+        },
+        {
+          "title": "Offline Replica Count",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_ReplicaManager_OfflineReplicaCount",
+              "legendFormat": "Offline Replicas"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 72}
+        },
+        {
+          "title": "ZooKeeper Session State",
+          "type": "graph",
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kafka_server_SessionExpireListener_ZooKeeperExpiresPerSec",
+              "legendFormat": "ZK Expires/sec"
+            }
+          ],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 72}
+        }
+      ],
+      "refresh": "10s",
+      "schemaVersion": 16,
+      "version": 1
+    }
