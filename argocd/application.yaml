@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: news-feed
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/nohy6630/news-feed.git  # Git 레포지토리 URL로 변경
+    targetRevision: HEAD  # 또는 main, master 등 브랜치명
+    path: helm_chart
+    helm:
+      valueFiles:
+        - values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: news-feed
+
+  syncPolicy:
+    automated:
+      prune: true  # 삭제된 리소스 자동 제거
+      selfHeal: true  # 수동 변경사항 자동 복구
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true  # 네임스페이스 자동 생성
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
