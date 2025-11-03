@@ -81,11 +81,23 @@ graph TD;
 
 ### 데이터 플로우
 
-1. 사용자가 게시물을 작성하면 MySQL에 저장
-2. 해당 사용자의 팔로워 목록을 조회
-3. 각 팔로워에 대해 Kafka 메시지 발행 (비동기)
-4. Kafka Consumer가 메시지를 소비하여 각 팔로워의 Redis 피드에 추가
-5. 사용자가 피드를 조회하면 Redis에서 빠르게 반환
+1. 사용자가 게시물을 작성하면 MySQL에 아래와 같은 구조로 저장됩니다.
+   - posts 테이블: { id, user_id, content, created_at }
+2. 서버는 MySQL에서 해당 사용자의 팔로워 목록을 조회합니다.
+   - follows 테이블: { follower_id, followee_id }
+3. 각 팔로워에 대해 Kafka에 메시지를 발행합니다.
+   - Kafka 메시지 예시: { post_id, author_id, follower_id, content, created_at }
+4. Kafka Consumer가 메시지를 받아 각 팔로워의 Redis 피드에 게시물 ID(post_id)를 추가합니다.
+   - Redis 구조 예시: key = feed:{follower_id}, value = 리스트 [post_id]
+5. 사용자가 자신의 피드를 조회하면, Redis에서 해당 사용자의 post_id 리스트를 받아 각 post_id에 대해 MySQL에서 상세 정보를 조회하여 반환합니다.
+   - Redis에서 post_id 리스트를 읽고, MySQL에서 게시물 상세 정보 조회 후 최신 게시물 순으로 반환
+
+#### 전체 데이터 이동 예시
+
+- 사용자가 게시물 작성 → MySQL 저장
+- 팔로워 목록 조회 → Kafka 메시지 발행 (팔로워별)
+- Kafka Consumer → Redis에 post_id 추가 (팔로워별)
+- 사용자가 피드 조회 → Redis에서 post_id 리스트 조회 → MySQL에서 상세 정보 조회 후 반환
 
 ## ✨ 주요 기능
 
